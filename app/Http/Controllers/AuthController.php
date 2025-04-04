@@ -39,4 +39,10 @@ class AuthController extends Controller
 
         return response()->json(['token' => $token, 'token_type' => 'Bearer']);
     }
+
+    public function logout(Request $request)
+    {
+        $request->user()->tokens()->delete();
+        return response()->json(['message' => 'Sesión cerrada correctamente']);
+    }
 }

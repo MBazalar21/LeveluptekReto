@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Exceptions\MessageNotFoundException;
 use Illuminate\Support\Facades\Http;
 
 class SwapiService
@@ -16,7 +17,7 @@ class SwapiService
     {
         $response = Http::get($this->baseUrl . "people/{$id}");
         if ($response->failed()) {
-            return response()->json(['error' => 'Personaje no encontrado'], 404);
+            throw new MessageNotFoundException('Personaje');
         }
         return $response->json();
     }

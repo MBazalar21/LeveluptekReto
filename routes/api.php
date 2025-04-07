@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Swapi\SwapiController;
+use App\Http\Controllers\Swapi\PeopleController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -15,7 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->prefix('people')->group(function () {
-    Route::get('/', [SwapiController::class, 'list']);      // Listar personajes
-    Route::get('/{id}', [SwapiController::class, 'show']);   // Detalle de un personaje
-    Route::post('/import/{id}', [SwapiController::class, 'importPeople']);
+    Route::get('/', [PeopleController::class, 'list']);      // Listar personajes
+    Route::get('/{id}', [PeopleController::class, 'show']);   // Detalle de un personaje
+    Route::post('/import/{id}', [PeopleController::class, 'importPeople']);
 });

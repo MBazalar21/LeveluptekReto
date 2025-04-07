@@ -10,7 +10,7 @@ use App\Models\Species;
 use App\Models\Vehicles;
 use App\Services\SwapiService;
 
-class SwapiController extends Controller
+class PeopleController extends Controller
 {
     protected $swapiService;
 

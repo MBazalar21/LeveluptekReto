@@ -55,22 +55,18 @@ class PeopleController extends Controller
         
         // PLANETA
         $planetData = $this->swapiService->getSwapiByUrl($people['homeworld']);
-        $planet = Planet::firstOrCreate(['name' => $planetData['name']]);
+        $planet = Planet::firstOrCreate(['name' => $planetData['name']],
+        [
+            'climate' => $planetData['climate'] ?? null,
+            'terrain' => $planetData['terrain'] ?? null,
+            'population' => $planetData['population'] ?? null
+        ]);
 
         // PERSONAJE
-        $peopleUpdCrt = People::updateOrCreate(
-            ['name' => $people['name']],
-            ['planet_id' => $planet->id]
-        );
+        $peopleUpdCrt = $this->registerPeople($people,$planet->id);
 
-        // PELÍCULAS
-        $peopleUpdCrt->films()->sync($this->syncSwappiArrayData("films",$people));
 
-        // VEHÍCULOS
-        $peopleUpdCrt->vehicles()->sync($this->syncSwappiArrayData('vehicles',$people));
 
-        // ESPECIES
-        $peopleUpdCrt->species()->sync($this->syncSwappiArrayData('species',$people));
 
         return response()->json([
             'message' => 'Personaje importado correctamente',
@@ -97,5 +93,21 @@ class PeopleController extends Controller
             $dataIds[] = $data->id;
         }
         return $dataIds;
+    }
+
+    public function registerPeople($people, $planetId){
+        $peopleUpdCrt = People::updateOrCreate(
+            ['name' => $people['name']],
+            ['planet_id' => $planetId]
+        );
+
+        // PELÍCULAS
+        $peopleUpdCrt->films()->sync($this->syncSwappiArrayData("films",$people));
+        // VEHÍCULOS
+        $peopleUpdCrt->vehicles()->sync($this->syncSwappiArrayData('vehicles',$people));
+        // ESPECIES
+        $peopleUpdCrt->species()->sync($this->syncSwappiArrayData('species',$people));
+
+        return $peopleUpdCrt;
     }
 }

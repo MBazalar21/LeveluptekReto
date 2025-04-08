@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('planets', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('climate');
+            $table->string('terrain');
+            $table->string('population');
             $table->timestamps();
         });
     }

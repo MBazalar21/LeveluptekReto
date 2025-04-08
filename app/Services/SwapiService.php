@@ -22,6 +22,14 @@ class SwapiService
         return $response->json();
     }
 
+    public function getPlanets($id)
+    {
+        $response = Http::get($this->baseUrl . "planets/{$id}");
+        if ($response->failed()) {
+            throw new MessageNotFoundException('Planeta');
+        }
+        return $response->json();
+    }
     public function getSwapiByUrl($url){
         $response = Http::get($url);
         return $response->json();

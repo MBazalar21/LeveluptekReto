@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Planet extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name','climate','terrain','population'];
     
-    public function peoples() {
+    public function people() {
         return $this->hasMany(People::class);
     }
 }

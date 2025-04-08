@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Swapi\PlanetController;
 use App\Http\Controllers\Swapi\PeopleController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,4 +19,10 @@ Route::middleware('auth:sanctum')->prefix('people')->group(function () {
     Route::get('/', [PeopleController::class, 'list']);      // Listar personajes
     Route::get('/{id}', [PeopleController::class, 'show']);   // Detalle de un personaje
     Route::post('/import/{id}', [PeopleController::class, 'importPeople']);
+});
+
+Route::middleware('auth:sanctum')->prefix('planet')->group(function () {
+    Route::get('/', [PlanetController::class, 'list']);      // Listar personajes
+    Route::get('/{id}', [PlanetController::class, 'show']);   // Detalle de un personaje
+    Route::post('/import/{id}', [PlanetController::class, 'import']);
 });

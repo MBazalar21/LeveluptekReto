@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\FanaticoController;
 use App\Http\Controllers\Swapi\PlanetController;
 use App\Http\Controllers\Swapi\PeopleController;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Middlewares\RoleMiddleware;
 
 
 // Rutas públicas
@@ -31,4 +34,16 @@ Route::middleware('auth:sanctum')->get('/query-logs', function () {
     return response()->json([
         'logs' => auth()->user()->queryLogs()->latest()->get()
     ]);
+});
+
+Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/consultas', [AdminController::class, 'todasConsultas']);
+    Route::get('/usuarios', [AdminController::class, 'listarUsuarios']);
+    Route::put('/usuarios/{id}', [AdminController::class, 'editarUsuario']);
+    Route::delete('/usuarios/{id}', [AdminController::class, 'eliminarUsuario']);
+});
+
+Route::middleware(['auth:sanctum', 'role:fanatico'])->group(function () {
+    Route::get('/mis-consultas', [FanaticoController::class, 'misConsultas']);
+    Route::put('/mi-perfil', [FanaticoController::class, 'editarPerfil']);
 });

@@ -13,4 +13,7 @@ class QueryLog extends Model
         'resource_id',
     ];
 
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }

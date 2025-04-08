@@ -15,12 +15,14 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6'
+            'password' => 'required|string|min:6',
+            'role' => 'in:admin,fanatico'
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'role' => $request->role,
             'password' => Hash::make($request->password)
         ]);
 
@@ -31,11 +33,16 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (!Auth::guard('web')->attempt($credentials)) {
+        $user = User::where('email', $credentials['email'])->first();
+
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
             return response()->json(['error' => 'No autorizado'], 401);
         }
-
-        $user = Auth::guard('web')->user();
+        
+        // if (!$user->hasRole($user->role)) {
+            $user->assignRole($user->role);
+        // }
+        
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json(['token' => $token, 'token_type' => 'Bearer']);

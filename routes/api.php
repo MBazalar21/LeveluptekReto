@@ -26,3 +26,9 @@ Route::middleware('auth:sanctum')->prefix('planet')->group(function () {
     Route::get('/{id}', [PlanetController::class, 'show']);   // Detalle de un personaje
     Route::post('/import/{id}', [PlanetController::class, 'import']);
 });
+
+Route::middleware('auth:sanctum')->get('/query-logs', function () {
+    return response()->json([
+        'logs' => auth()->user()->queryLogs()->latest()->get()
+    ]);
+});

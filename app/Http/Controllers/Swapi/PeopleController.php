@@ -8,20 +8,25 @@ use App\Models\People;
 use App\Models\Planet;
 use App\Models\Species;
 use App\Models\Vehicles;
+use App\Services\AuditService;
 use App\Services\SwapiService;
 
 class PeopleController extends Controller
 {
     protected $swapiService;
+    protected $auditService;
 
-    public function __construct(SwapiService $swapiService)
+    public function __construct(SwapiService $swapiService,AuditService $auditService)
     {
         $this->swapiService = $swapiService;
+        $this->auditService = $auditService;
     }
 
     public function list()
     {
         $characters = People::with(['planet', 'films', 'vehicles', 'species'])->get();
+        
+        $this->auditService->saveQueryLog('list_people','people',null);
 
         return response()->json([
             'data' => $characters
@@ -36,6 +41,8 @@ class PeopleController extends Controller
             return response()->json(['message' => 'Personaje no encontrado'], 404);
         }
 
+        $this->auditService->saveQueryLog('show_people','people',$character->id);
+
         return response()->json(['data' => $character]);
     }
 
@@ -47,6 +54,8 @@ class PeopleController extends Controller
                             ->first();
 
         if ($exists) {
+            $this->auditService->saveQueryLog('import_people','people_exist',$exists->id);
+
             return response()->json([
                 'message' => 'El personaje ya se encuentra registrado.',
                 'data' => $exists
@@ -64,9 +73,8 @@ class PeopleController extends Controller
 
         // PERSONAJE
         $peopleUpdCrt = $this->registerPeople($people,$planet->id);
-
-
-
+        
+        $this->auditService->saveQueryLog('import_people','people',$peopleUpdCrt->id);
 
         return response()->json([
             'message' => 'Personaje importado correctamente',
